@@ -1,0 +1,30 @@
+name: api-build
+on:
+  push:
+    paths: ["apps/api/**", ".github/workflows/api-build.yml"]
+  pull_request:
+    paths: ["apps/api/**", ".github/workflows/api-build.yml"]
+
+jobs:
+  api-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: "apps/api/yarn.lock"
+
+      - name: Install
+        working-directory: apps/api
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        working-directory: apps/api
+        run: yarn lint
+
+      - name: Build
+        working-directory: apps/api
+        run: yarn build
